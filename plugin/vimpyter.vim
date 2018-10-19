@@ -4,8 +4,8 @@ if exists('g:loaded_vimpyter_plugin_dont_use_this_flag_elsewhere')
 endif
 
 " Is notedown executable present?
-if !executable('notedown')
-  echo 'notedown executable is required in order for this software to work. '
+if !executable('jupytext')
+  echo 'jupytext executable is required in order for this software to work. '
         \ . 'Check whether you have needed dependencies installed in README.md'
   finish
 endif
