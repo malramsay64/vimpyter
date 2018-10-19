@@ -60,8 +60,8 @@ function! vimpyter#updateNotebook()
   "Set the last updated file flag (job_id in case of neovim)
   "(see function below: vimpyter#notebookUpdatesFinished())
   let g:vimpyter_internal_last_save_flag = jobstart(
-        \ 'jupytext --from markdown --to notebook ' . b:proxy_file .
-        \ ' > ' . b:original_file,
+        \ 'jupytext --from markdown --to ipynb ' . b:proxy_file .
+        \ ' ' . b:original_file,
         \ {
         \  'on_exit': function('s:updateSuccessNeovim')
         \ })
@@ -80,8 +80,8 @@ function! vimpyter#updateNotebook()
     "Set the last updated file flag (string in case of vim, see documentation)
     "(see function below: vimpyter#notebookUpdatesFinished())
     let l:command = [&shell, &shellcmdflag,
-          \ 'jupytext --from markdown --to notebook ' .
-          \ b:proxy_file . ' > ' . b:original_file]
+          \ 'jupytext --from markdown --to ipynb ' .
+          \ b:proxy_file . ' ' . b:original_file]
     let g:vimpyter_internal_last_save_flag = job_start(
           \ l:command, {'exit_cb': function('s:updateSuccessVim')})
   endfunction
@@ -121,7 +121,7 @@ function! vimpyter#createView()
 
   " Transform json to markdown and save the result in proxy
   call system('jupytext --to markdown ' . l:original_file .
-        \ ' > ' . l:proxy_file)
+        \ ' ' . l:proxy_file)
 
   " Open proxy file
   silent execute 'edit' l:proxy_file
