@@ -87,10 +87,12 @@ endfunction
 " Update jupyter notebook when saving buffer
 function! vimpyter#updateNotebook()
   " Ensure this is a vimpyter markdown file
-  if has('nvim')
-    call s:updateNotebookNeovim()
-  else
-    call s:updateNotebookVim()
+  if exists('b:original_file') && exists('b:proxy_file')
+      if has('nvim')
+        call s:updateNotebookNeovim()
+      else
+        call s:updateNotebookVim()
+      endif
   endif
 endfunction
 
@@ -104,10 +106,10 @@ function! vimpyter#createView()
     if has_key(g:vimpyter_buffer_names, a:name)
       let l:buffer_name = g:vimpyter_buffer_names[a:name]
       let g:vimpyter_buffer_names[a:name] = l:buffer_name + 1
-      return a:name . string(l:buffer_name) . '.ipynb'
+      return a:name . string(l:buffer_name) . '.md'
     else
       let g:vimpyter_buffer_names[a:name] = 0
-      return a:name . '.ipynb'
+      return a:name . '.md'
     endif
     return ''
   endfunction
@@ -134,7 +136,10 @@ function! vimpyter#createView()
   silent execute ':bd' l:original_file
 
   " SET FILETYPE TO ipynb
-  set filetype=ipynb
+  set filetype=pandoc
+
+  autocmd BufWritePost <buffer> :VimpyterUpdate
+  autocmd VimLeavePre <buffer> call vimpyter#notebookUpdatesFinished()
 endfunction
 
 " Close vim/nvim only if all updates finished
