@@ -65,8 +65,8 @@ augroup VimpyterAutoCommands
     autocmd BufReadPost *.ipynb call vimpyter#createView()
     autocmd BufNewFile *.ipynb call vimpyter#createView()
     " If view was saved transfer the changes from proxy to original file
-    autocmd BufWritePost *.ipynb :VimpyterUpdate
-    autocmd VimLeavePre *.ipynb call vimpyter#notebookUpdatesFinished()
+    autocmd BufWritePost *.md :VimpyterUpdate
+    autocmd VimLeavePre *.md call vimpyter#notebookUpdatesFinished()
 
 augroup END
 
