@@ -45,10 +45,8 @@ function! vimpyter#startNteract()
   call s:colorEcho('Started Nteract app', 'nteract')
 endfunction
 
-" Update jupyter notebook when saving buffer
-function! vimpyter#updateNotebook()
-  " Updating notebook for neovim (another function for vim, line 53)
-  function! s:updateNotebookNeovim()
+" Updating notebook for neovim (another function for vim, line 53)
+function! s:updateNotebookNeovim()
     function! s:updateSuccessNeovim(job_id, data, event)
       if a:data == 0
         call s:colorEcho('Updated source notebook', 'update')
@@ -57,18 +55,18 @@ function! vimpyter#updateNotebook()
       endif
     endfunction
 
-  "Set the last updated file flag (job_id in case of neovim)
-  "(see function below: vimpyter#notebookUpdatesFinished())
-  let g:vimpyter_internal_last_save_flag = jobstart(
+    "Set the last updated file flag (job_id in case of neovim)
+    "(see function below: vimpyter#notebookUpdatesFinished())
+    let g:vimpyter_internal_last_save_flag = jobstart(
         \ 'jupytext --from markdown --to ipynb ' . b:proxy_file .
         \ ' --output ' . b:original_file,
         \ {
         \  'on_exit': function('s:updateSuccessNeovim')
         \ })
-  endfunction
+endfunction
 
-  "Updating notebook for vim
-  function! s:updateNotebookVim()
+"Updating notebook for vim
+function! s:updateNotebookVim()
     function! s:updateSuccessVim(channel, message)
       if a:message== 0
         call s:colorEcho('Updated source notebook', 'update')
@@ -84,14 +82,16 @@ function! vimpyter#updateNotebook()
           \ b:proxy_file . ' --output ' . b:original_file]
     let g:vimpyter_internal_last_save_flag = job_start(
           \ l:command, {'exit_cb': function('s:updateSuccessVim')})
-  endfunction
+endfunction
 
+" Update jupyter notebook when saving buffer
+function! vimpyter#updateNotebook()
+  " Ensure this is a vimpyter markdown file
   if has('nvim')
     call s:updateNotebookNeovim()
   else
     call s:updateNotebookVim()
   endif
-
 endfunction
 
 "Create view by notedown in /tmp directory with specified filename
